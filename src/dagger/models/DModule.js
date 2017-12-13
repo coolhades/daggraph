@@ -17,7 +17,7 @@ function getProvidedDependencies(path){
     let file = FS.readFileSync(path, 'utf8');
   
     // Match all the dependencies of the module using a regex
-    const fullDependencyRegex = /@Provides(?:(?:\n|.)*?\s+fun\s+.+?\(\s*\)\s*:\s*(\w+(?:\.\w+)*)(?:\s+|=)|(?:\n|.)*?\s+(?:protected|public)?\s+(\w*)\s+\w+\s*\()/;    
+    const fullDependencyRegex = /@Provides(?:(?:\n|.)*?\s+fun\s+.+?\(\s*(?:\n|.)*?\)\s*:\s*(\w+(?:\.\w+)*)(?:\s+|=)|(?:\n|.)*?\s+(?:protected|public)?\s+(\w*)\s+\w+\s*\()/;    
     const paramRegex = /\s*(\w+)\s*\w+\s*,?\s*/;
  
     const deps = [];
