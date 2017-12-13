@@ -17,20 +17,23 @@ function getProvidedDependencies(path){
     let file = FS.readFileSync(path, 'utf8');
   
     // Match all the dependencies of the module using a regex
-    const fullDependencyRegex = /@\w+\s*(?:protected|public)?\s*(\w+(?:\.\w+)*)\s*provide\w+\s*\(([^\)]*)\)/;    
+    const fullDependencyRegex = /@Provides(?:(?:\n|.)*?\s+fun\s+.+?\(\s*\)\s*:\s*(\w+(?:\.\w+)*)(?:\s+|=)|(?:\n|.)*?\s+(?:protected|public)?\s+(\w*)\s+\w+\s*\()/;    
     const paramRegex = /\s*(\w+)\s*\w+\s*,?\s*/;
  
     const deps = [];
     while ((fullMatch = fullDependencyRegex.exec(file)) !== null) {
+        
         // Get dependency name
         file = file.replace(fullDependencyRegex, "");
         const moduleDep = new DDependency(fullMatch[1]);
-        let params = fullMatch[2];
-    
+        
         // Get sub-depepndencies
-        while ((paramMatch = paramRegex.exec(params)) !== null) {
-            params = params.replace(paramRegex, "");
-            moduleDep.addDependency(new DDependency(paramMatch[1]));
+        let params = fullMatch[2];
+        if (params !== undefined) {
+            while ((paramMatch = paramRegex.exec(params)) !== null) {
+                params = params.replace(paramRegex, "");
+                moduleDep.addDependency(new DDependency(paramMatch[1]));
+            }
         }
         deps.push(moduleDep);
     }

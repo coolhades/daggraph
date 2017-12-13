@@ -66,7 +66,9 @@ function searchModules(searchCriteria){
     return new Promise((resolve, reject) => {
         
         const injectionPathMap = [];
-        const injectRegex = /@Inject(?:\n|.)*?\s+(?:protected|public)*\s*(\w*)/g;
+
+        // Find all the field injections for kotline and java (group 1 java only, group 2 kotlin only) 
+        const injectRegex = /(?:(?:@Inject(?:\n|.)*?\s+(?:protected|public|lateinit|(\w+(?:\.\w+)*))?\s+(?:var(?:\n|.)*?:\s*)?)|(?:@field\s*:\s*\[(?:\n|.)*?Inject(?:\n|.)*?\]\s*(?:protected|public|lateinit)?\s*var\s*.+?\s*:\s*))(\w+(?:\.\w+)*)/g;
         const fileSniffer = FILE_SNIFFER.create(searchCriteria);
 
         fileSniffer.on('match', (path) => {
@@ -74,8 +76,6 @@ function searchModules(searchCriteria){
           const file = FS.readFileSync(path, 'utf8');
           // Find injections
           while ((fullMatch = injectRegex.exec(file)) !== null) {
-            // For each injections found, save the path in the array corresponding to the right dependency
-
             // If the array of paths for that dep is not initialised, init
             if (injectionPathMap[fullMatch[1]] === undefined) injectionPathMap[fullMatch[1]] = [];
 
