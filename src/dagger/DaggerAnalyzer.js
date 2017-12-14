@@ -77,23 +77,27 @@ function searchModules(searchCriteria){
           const file = FS.readFileSync(path, 'utf8');
           // Find injections
           while ((fullMatch = injectRegex.exec(file)) !== null) {
+            var depName;
+            var depIdentifier;
 
-            var dep; // dep identifier
-            if (fullMatch[1] !== undefined && fullMatch[1] !== null) dep = fullMatch[1];
-            else dep = fullMatch[2];
+            // Name Could be at 1 or 3
+            if (fullMatch[1] !== undefined && fullMatch[1] !== null) depName = fullMatch[1];
+            else depName = fullMatch[2];
 
             // Look for @Named in the full matcher and add it to the dep identifier
             const namedMatch = namedRegex.exec(fullMatch[0]);
-            if(namedMatch !== null && namedMatch[1] !== undefined && namedMatch[1] !== null){
-                dep = dep + "*" + namedMatch[1];
+            if(namedMatch !== null){
+              depIdentifier = createDependencyIdentifier(depName, namedMatch[1]);
+            }else{
+              depIdentifier = depName;
             }
 
             // If the array of paths for that dep is not initialised, init
-            if (injectionPathMap[dep] === undefined) injectionPathMap[dep] = [];
+            if (injectionPathMap[depIdentifier] === undefined) injectionPathMap[depIdentifier] = [];
 
             // If the path is not already in the list, add it
-            if (!injectionPathMap[dep].includes(path)){
-              injectionPathMap[dep].push(path);
+            if (!injectionPathMap[depIdentifier].includes(path)){
+              injectionPathMap[depIdentifier].push(path);
             }
           }
         });
@@ -111,9 +115,8 @@ function searchModules(searchCriteria){
     modules.forEach(module => {
       module.dependencies.forEach(dep => {
 
-        // Define the identifier base on the name and the named if present
-        var depIndentifier = dep.name;
-        if (dep.named !== undefined && dep.named !== null) depIndentifier = depIndentifier + "*" + dep.named;
+        // Define the identifier base on the name and the named parameter if present
+        var depIndentifier = createDependencyIdentifier(dep.name, dep.named);
         
         // If i have some injections for that dependency in the map, add them
         if(injectionPathMap[depIndentifier] !== undefined){
@@ -123,6 +126,12 @@ function searchModules(searchCriteria){
         }
       });
     });
+  }
+
+  function createDependencyIdentifier(depName, depNamed){
+    var depIndentifier = depName;
+    if (depNamed !== undefined && depNamed !== null) depIndentifier = depIndentifier + "**" + depNamed;
+    return depIndentifier;
   }
 
   exports.findComponents = findComponents;

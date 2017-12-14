@@ -33,10 +33,10 @@ Those are the features that are currently supported and used to build the graph,
 | @Module               |  ✅           |   ✅     |
 | @Component            |  ✅           |   ✅     |
 | @SubComponent         |  ✅           |   ✅     |
-| @Provides             |  ✅           |   🚧     |
+| @Provides             |  ✅           |   ✅     |
 | Field @Inject         |  ✅           |   ✅     |
 | Constructor @Inject   |  ❌           |   ❌     |
-| @Named()              |  ✅           |   ✅     |
+| @Named()              |  🚧           |   ✅     |
 | @Binds                |  ❌           |   ❌     |
 | Component dependencies|  ❌           |   ❌     |
 | Extended modules      |  ❌           |   ❌     |

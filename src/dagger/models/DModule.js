@@ -42,7 +42,7 @@ function  getProvidedDependencies(path){
             }
         }*/
         
-        // Look for @Named in the full matcher 
+        // Look for @Named in the full matcher and add it to the dependency if found
         const namedMatch = namedRegex.exec(fullMatch[0]);
         if(namedMatch !== null && namedMatch[1] !== undefined && namedMatch[1] !== null){
             moduleDep.addNamed(namedMatch[1]);
