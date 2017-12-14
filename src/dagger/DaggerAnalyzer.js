@@ -69,6 +69,7 @@ function searchModules(searchCriteria){
 
         // Find all the field injections for kotline and java (group 1 java only, group 2 kotlin only) 
         const injectRegex = /(?:(?:@Inject(?:\n|.)*?\s+(?:protected|public|lateinit|(\w+(?:\.\w+)*))?\s+(?:var(?:\n|.)*?:\s*)?)|(?:@field\s*:\s*\[(?:\n|.)*?Inject(?:\n|.)*?\]\s*(?:protected|public|lateinit)?\s*var\s*.+?\s*:\s*))(\w+(?:\.\w+)*)/g;
+        const namedRegex = /@*Named\(\"(\w*)\"\)/;
         const fileSniffer = FILE_SNIFFER.create(searchCriteria);
 
         fileSniffer.on('match', (path) => {
@@ -76,12 +77,23 @@ function searchModules(searchCriteria){
           const file = FS.readFileSync(path, 'utf8');
           // Find injections
           while ((fullMatch = injectRegex.exec(file)) !== null) {
+
+            var dep; // dep identifier
+            if (fullMatch[1] !== undefined && fullMatch[1] !== null) dep = fullMatch[1];
+            else dep = fullMatch[2];
+
+            // Look for @Named in the full matcher and add it to the dep identifier
+            const namedMatch = namedRegex.exec(fullMatch[0]);
+            if(namedMatch !== null && namedMatch[1] !== undefined && namedMatch[1] !== null){
+                dep = dep + "*" + namedMatch[1];
+            }
+
             // If the array of paths for that dep is not initialised, init
-            if (injectionPathMap[fullMatch[1]] === undefined) injectionPathMap[fullMatch[1]] = [];
+            if (injectionPathMap[dep] === undefined) injectionPathMap[dep] = [];
 
             // If the path is not already in the list, add it
-            if (!injectionPathMap[fullMatch[1]].includes(path)){
-              injectionPathMap[fullMatch[1]].push(path);
+            if (!injectionPathMap[dep].includes(path)){
+              injectionPathMap[dep].push(path);
             }
           }
         });
@@ -98,9 +110,14 @@ function searchModules(searchCriteria){
   function addInjectionsToModules(injectionPathMap, modules){
     modules.forEach(module => {
       module.dependencies.forEach(dep => {
+
+        // Define the identifier base on the name and the named if present
+        var depIndentifier = dep.name;
+        if (dep.named !== undefined && dep.named !== null) depIndentifier = depIndentifier + "*" + dep.named;
+        
         // If i have some injections for that dependency in the map, add them
-        if(injectionPathMap[dep.name] !== undefined){
-          injectionPathMap[dep.name].forEach(path => {
+        if(injectionPathMap[depIndentifier] !== undefined){
+          injectionPathMap[depIndentifier].forEach(path => {
             dep.addInjectionPath(path);
           });
         }
