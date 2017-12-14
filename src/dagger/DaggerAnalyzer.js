@@ -23,7 +23,6 @@ function findComponents(projectRootPath){
         .ext('.java', '.kt');
     
         searchModules(searchCriteria)
-        .then(modules => findAndAddInjections(modules, searchCriteria))
         .then(modules => searchComponents(modules, searchCriteria))
         .then(components => resolve(components))
         .catch(e => reject(e));
@@ -40,7 +39,10 @@ function searchModules(searchCriteria){
         module.init(path);
         daggerModules.push(module);
       });
-      fileSniffer.on("end", (files) => resolve(daggerModules));
+      fileSniffer.on("end", (files) => {
+        findAndAddInjections(daggerModules, searchCriteria)
+        .then(modules => resolve(modules));
+      });
       fileSniffer.on("error", reject);
       fileSniffer.find("@Module");
     });
@@ -114,7 +116,6 @@ function searchModules(searchCriteria){
   function addInjectionsToModules(injectionPathMap, modules){
     modules.forEach(module => {
       module.dependencies.forEach(dep => {
-
         // Define the identifier base on the name and the named parameter if present
         var depIndentifier = createDependencyIdentifier(dep.name, dep.named);
         
