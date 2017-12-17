@@ -32,9 +32,13 @@ function findComponents(projectRootPath){
 function searchModules(searchCriteria){
     return new Promise((resolve, reject) => {
       const daggerModules = [];
+      const analyzed = []; 
       const fileSniffer = FILE_SNIFFER.create(searchCriteria);
   
       fileSniffer.on("match", (path) => {
+        if (analyzed.includes(path)) return;
+        analyzed.push(path);
+
         var module = new DModule();
         module.init(path);
         daggerModules.push(module);
@@ -50,10 +54,14 @@ function searchModules(searchCriteria){
   
   function searchComponents(modules, searchCriteria){
     return new Promise((resolve, reject) => {
-      const  daggerComponents = [];
+      const daggerComponents = [];
+      const analyzed = []; 
       const fileSniffer = FILE_SNIFFER.create(searchCriteria);
   
       fileSniffer.on('match', (path) => {
+        if (analyzed.includes(path)) return;
+        analyzed.push(path);
+
         const component = new DComponent();
         component.init(path, modules);
         daggerComponents.push(component);

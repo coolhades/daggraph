@@ -19,9 +19,9 @@ function  getProvidedDependencies(path){
     // Match all the dependencies of the module using a regex
     // Group 1: set if kotlin
     // Group 2: set if java
-    const fullDependencyRegex = /@(?:\n|.)*?Provides(?:(?:\n|.)*?\s+fun\s+.+?\(\s*(?:\n|.)*?\)\s*:\s*(\w+(?:\.\w+)*)(?:\s+|=)|(?:\n|.)*?\s+(?:protected|public)?\s+(\w*)\s+\w+\s*\()/;    
+    const fullDependencyRegex = /(?:@Named\s*\("[^"]*"\)\s*)?@Provides(?:(?:\n|.)*?\s+fun\s+.+?\(\s*(?:\n|.)*?\)\s*:\s*(\w+(?:\.\w+)*)(?:\s+|=)|(?:\n|.)*?\s+(?:static)?\s*(?:protected|public)?\s+(\w*)\s+\w+\s*\((?:\n|.)*?\))/;    
     //const paramRegex = /\s*(\w+)\s*\w+\s*,?\s*/;
-    const namedRegex = /@Named\(\"(\w*)\"\)/;
+    const namedRegex = /@Named\(\"([a-zA-Z0-9_ ]*)\"\)/;
 
     const deps = [];
     while ((fullMatch = fullDependencyRegex.exec(file)) !== null) {
