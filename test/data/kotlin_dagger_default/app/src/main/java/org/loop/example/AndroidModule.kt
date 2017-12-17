@@ -33,7 +33,7 @@ class AndroidModule(private val application: Application) {
 
     @Provides
     @Singleton
-    @Named("somethingElse")
+    @Named("something Else")
     fun provideSomethingElse(): String = "somethingElse"
 
 }

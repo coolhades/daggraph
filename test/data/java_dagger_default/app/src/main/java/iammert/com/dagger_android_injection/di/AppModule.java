@@ -27,7 +27,7 @@ public class AppModule {
 
     @Named("String2")
     @Provides
-    public String provideAnotherString() {
+    String provideAnotherString() {
         return "Wooow2";
     }
 }
