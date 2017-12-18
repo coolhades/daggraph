@@ -66,4 +66,30 @@ test("GIVEN kotlin module WHEN init THEN correct dependencies found", t => {
     daggerModule.dependencies.forEach(dep => assert(expectedDependencies.includes(dep.name)));
 });
 
+test("GIVEN java module WHEN init THEN named attribute saved", t => {
+    
+    // Given
+    const daggerModule = new DModule("name");
+
+    // When
+    daggerModule.init(kotlinFileModulePath);
+
+    // Then
+    t.is(daggerModule.dependencies[2].named, "something");
+    t.is(daggerModule.dependencies[3].named, "something Else");
+});
+    
+test("GIVEN kotlin module WHEN init THEN correct dependencies of dependency found", t => {
+    
+    // Given
+    const daggerModule = new DModule("name");
+
+    // When
+    daggerModule.init(kotlinFileModulePath);
+
+    // Then
+    t.is(daggerModule.dependencies[0].dependencies.length, 1);
+    t.is(daggerModule.dependencies[0].dependencies[0].name, "Context");
+});
+
 /* end ################################### Kotlin ################################### */
