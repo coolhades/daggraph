@@ -24,15 +24,28 @@ test("GIVEN java module WHEN init THEN correct dependencies found", t => {
 
 test("GIVEN java module WHEN init THEN named attribute saved", t => {
     
-        // Given
-        const daggerModule = new DModule("name");
+    // Given
+    const daggerModule = new DModule("name");
+
+    // When
+    daggerModule.init(javaFileModulePath);
+
+    // Then
+    t.is(daggerModule.dependencies[1].named, "String1 test");
+    t.is(daggerModule.dependencies[2].named, "String2");
+});
+
+test("GIVEN java module WHEN init THEN correct dependencies of dependency found", t => {
     
-        // When
-        daggerModule.init(javaFileModulePath);
-    
-        // Then
-        t.is(daggerModule.dependencies[1].named, "String1 test");
-        t.is(daggerModule.dependencies[2].named, "String2");
+    // Given
+    const daggerModule = new DModule("name");
+
+    // When
+    daggerModule.init(javaFileModulePath);
+
+    // Then
+    t.is(daggerModule.dependencies[0].dependencies.length, 1);
+    t.is(daggerModule.dependencies[0].dependencies[0].name, "Context");
 });
 
 /* end ################################### Java ################################### */
@@ -41,29 +54,29 @@ test("GIVEN java module WHEN init THEN named attribute saved", t => {
 
 test("GIVEN kotlin module WHEN init THEN correct dependencies found", t => {
     
-        // Given
-        const expectedDependencies = ["Context", "LocationManager", "String", "String"];
-        const daggerModule = new DModule("name");
+    // Given
+    const expectedDependencies = ["Context", "LocationManager", "String", "String"];
+    const daggerModule = new DModule("name");
+
+    // When
+    daggerModule.init(kotlinFileModulePath);
+
+    // Then
+    t.is(daggerModule.dependencies.length, expectedDependencies.length);
+    daggerModule.dependencies.forEach(dep => assert(expectedDependencies.includes(dep.name)));
+});
     
-        // When
-        daggerModule.init(kotlinFileModulePath);
+test("GIVEN kotlin module WHEN init THEN correct dependencies of dependency found", t => {
     
-        // Then
-        t.is(daggerModule.dependencies.length, expectedDependencies.length);
-        daggerModule.dependencies.forEach(dep => assert(expectedDependencies.includes(dep.name)));
-    });
-    
-    test("GIVEN kotlin module WHEN init THEN named attribute saved", t => {
-        
-            // Given
-            const daggerModule = new DModule("name");
-        
-            // When
-            daggerModule.init(kotlinFileModulePath);
-        
-            // Then
-            t.is(daggerModule.dependencies[2].named, "something");
-            t.is(daggerModule.dependencies[3].named, "something Else");
-    });
+    // Given
+    const daggerModule = new DModule("name");
+
+    // When
+    daggerModule.init(kotlinFileModulePath);
+
+    // Then
+    t.is(daggerModule.dependencies[0].dependencies.length, 1);
+    t.is(daggerModule.dependencies[0].dependencies[0].name, "Context");
+});
 
 /* end ################################### Kotlin ################################### */

@@ -19,8 +19,8 @@ function  getProvidedDependencies(path){
     // Match all the dependencies of the module using a regex
     // Group 1: set if kotlin
     // Group 2: set if java
-    const fullDependencyRegex = /(?:@Named\s*\("[^"]*"\)\s*)?@Provides(?:(?:\n|.)*?\s+fun\s+.+?\(\s*(?:\n|.)*?\)\s*:\s*(\w+(?:\.\w+)*)(?:\s+|=)|(?:\n|.)*?\s+(?:static)?\s*(?:protected|public)?\s+(\w*)\s+\w+\s*\((?:\n|.)*?\))/;    
-    //const paramRegex = /\s*(\w+)\s*\w+\s*,?\s*/;
+    const fullDependencyRegex = /(?:@Named\s*\("[^"]*"\)\s*)?@Provides(?:(?:\n|.)*?\s+fun\s+.+?\(\s*(?:\n|.)*?\)\s*:\s*(\w+(?:\.\w+)*)(?:\s+|=)|(?:\n|.)*?\s+(?:static)?\s*(?:protected|public)?\s+(\w*)\s+\w+\s*\(((?:\n|.)*?)\))/;    
+    const paramRegex = /\s*(\w+)\s*\w+\s*,?\s*/;
     const namedRegex = /@Named\(\"([a-zA-Z0-9_ ]*)\"\)/;
 
     const deps = [];
@@ -34,13 +34,13 @@ function  getProvidedDependencies(path){
         const moduleDep = new DDependency(dep);
         
         // Get sub-depepndencies
-        /*let params = fullMatch[2];
+        let params = fullMatch[3];
         if (params !== undefined) {
             while ((paramMatch = paramRegex.exec(params)) !== null) {
                 params = params.replace(paramRegex, "");
                 moduleDep.addDependency(new DDependency(paramMatch[1]));
             }
-        }*/
+        }
         
         // Look for @Named in the full matcher and add it to the dependency if found
         const namedMatch = namedRegex.exec(fullMatch[0]);
