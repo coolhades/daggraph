@@ -36,7 +36,7 @@ Those are the features that are currently supported and used to build the graph,
 | @Provides             |  ✅           |   ✅     |
 | Field @Inject         |  ✅           |   ✅     |
 | Constructor @Inject   |  ❌           |   ❌     |
-| @Named()              |  🚧           |   ✅     |
+| @Named()              |  ✅           |   ✅     |
 | @Binds                |  ❌           |   ❌     |
 | Component dependencies|  ❌           |   ❌     |
 | Extended modules      |  ❌           |   ❌     |
