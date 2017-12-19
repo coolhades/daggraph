@@ -1,5 +1,6 @@
 const FS = require('fs');
 const Utils = require('./../../utils/utils');
+const DModule = require('./DModule');
 
 function DComponent(){
     this.modules = [];
@@ -27,11 +28,20 @@ function getModules(file, allModules){
             while ((array = modulesRegex.exec(element)) !== null) {
 
                 // If the model name in the component matches one of the modules that we have loaded, then add it to the component
-                allModules.forEach(module => {
-                    if (array[1] === module.name) {
-                        result.push(module);
+                var loadedModule;
+                allModules.forEach(m => {
+                    if (array[1] === m.name) {
+                        loadedModule = m;
+                        // TODO break here
                     }
                 });
+                // If we don't have the module loaded, fallback creating a new one with just that name
+                if (loadedModule === undefined){
+                    loadedModule = new DModule();
+                    loadedModule.name = array[1];
+                }
+
+                result.push(loadedModule);
             }
         });
     }

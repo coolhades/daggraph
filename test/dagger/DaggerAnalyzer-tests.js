@@ -19,7 +19,7 @@ test("GIVEN java sample project WHEN analyze THEN correct components found", t =
 test("GIVEN java sample project WHEN analyze THEN correct modules found", t => {
     return DAGGER_ANALYZER.findComponents(process.cwd() + "/test/data/java_dagger_default").then(components => {
         
-        const expectedModulesNames = ["AppModule", "ActivityBuilder"];
+        const expectedModulesNames = ["AppModule", "ActivityBuilder", "AndroidSupportInjectionModule"];
 
         const modules = components[0].modules;
         
