@@ -1,11 +1,12 @@
 import test from 'ava';
 import assert from 'assert';
+const path = require('path');
 const DComponent = require('./../../../src/dagger/models/DComponent');
 const DModule = require('./../../../src/dagger/models/DModule');
 
 // Test data
-const kotlinFileComponentPath = process.cwd() + "/test/data/kotlin_dagger_default/app/src/main/java/org/loop/example/ApplicationComponent.kt";
-const javaFileComponentPath = process.cwd() + "/test/data/java_dagger_default/app/src/main/java/iammert/com/dagger_android_injection/di/AppComponent.java";
+const kotlinFileComponentPath = path.join(__dirname, "../../data/kotlin_dagger_default/app/src/main/java/org/loop/example/ApplicationComponent.kt");
+const javaFileComponentPath = path.join(__dirname, "../../data/java_dagger_default/app/src/main/java/iammert/com/dagger_android_injection/di/AppComponent.java");
 
 /* start ################################### Java ################################### */
 
